@@ -7,14 +7,11 @@ def zscore(x):
         return None
     if len(x) == 0 or x.shape[1] != 1:
         return None
-    mean = np.mean(x)
+    try:
+        mean = np.mean(x)
+    except TypeError:
+        return None
     std = np.std(x)
     zscores = np.array([(value - mean) / std for value in x])
     return zscores
 
-
-if __name__ == "__main__":
-    X = np.array([[0],[ 15],[ -9],[ 7],[ 12],[ 3],[ -21]])
-    print(zscore(X))
-    Y = np.array([[2],[ 14],[ -13],[ 5],[ 12],[ 4],[ -19]])
-    print(zscore(Y))

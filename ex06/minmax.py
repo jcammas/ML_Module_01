@@ -5,7 +5,10 @@ def minmax(x):
     if not isinstance(x, np.ndarray) or len(x) == 0 or x.shape[1] != 1:
         return None
     # Getting min value inside data
-    data_min = np.min(x, axis=0)
+    try:
+        data_min = np.min(x, axis=0)
+    except TypeError:
+        return None
     # Getting the distance between max and min
     data_range = np.max(x, axis=0) - data_min
     # Getting scale from the range -> value to multiply
