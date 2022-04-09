@@ -146,6 +146,7 @@ if __name__ == "__main__":
     model.plot_hypothesis(Xpill, Yscore, y_hat)
     model.plot_loss_function(Xpill, Yscore)
 
+    print('\033[1;4mOther tests :\033[0m', end='\n\n')
     model1 = MyLinearRegression(np.array([[89.], [-8.]]))
     Y_model1 = model1.predict_(Xpill)
     print(model1.mse_(Yscore, Y_model1))
