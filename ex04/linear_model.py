@@ -14,7 +14,7 @@ class MyLinearRegression:
     Description:
         My personnal lienar regression class to fit like a boss.
     """
-    def __init__(self, thetas, alpha=0.001, max_iter=10000):
+    def __init__(self, thetas, alpha=0.001, max_iter=100000):
         if not isinstance(alpha, float) or not isinstance(max_iter, int):
             return None
         if alpha <= 0 or max_iter <= 0:
@@ -124,28 +124,26 @@ class MyLinearRegression:
                 return None
         return loss
 
-    # -------------------------------------------------------------------------------- #
-    #                                   Big mess below                                 #
     def plot_loss_function(self, x, y):
         if not MyLinearRegression.verif_params(x, y):
             return None
-        fig = plt.figure(figsize=(10, 8))
-        colors = ['#E1E6E2', '#D2D6D3', '#C5C9C6', '#B8BCB8', '#A4A8A4', '#919491']
-        costs = []
-        for i in range(1, 7):
-            tmp_model = MyLinearRegression(deepcopy(self.thetas + i + 1))
-            tmp_model.fit_(x, y)
-            y_hat = tmp_model.predict_(x)
-            loss = tmp_model.loss_elem_(y, y_hat)
-            #loss = tmp_model.mse_(y, y_hat)
-            costs.append(loss)
-            #costs.append(tmp_model.mse_(y, y_hat))
-            plt.plot(x, loss)
-            #plt.plot(tmp_model.thetas[1], loss, c='#1DF441')
-            #plt.plot(tmp_model.mse_(y, y_hat), c=colors[i - i])
+        theta0_list = [84., 89., 93., 97., 101., 105.]
+        n = len(theta0_list)
+        colors = plt.cm.Greys(np.linspace(1, 0, n + 1))
+        continuous_theta1 = np.arange(-18, -4, 0.01).reshape(-1, 1)
+        for index, theta0 in enumerate(theta0_list):
+            loss = []
+            for theta1 in continuous_theta1:
+                model = MyLinearRegression(np.array([[theta0], [theta1]]))
+                loss.append(model.mse_(y, model.predict_(x)))
+            plt.plot(continuous_theta1, loss,
+                     label="J(${{\Theta_0}}$=$c_{}$, ${{\Theta_1}}$)".format(index),
+                     color=colors[index + 1])
+        plt.xlabel('${\Theta_1}$')
+        plt.ylabel("Cost function J(${\Theta_0}$, ${\Theta_1})$")
+        plt.legend(loc='lower right')
+        plt.grid()
         plt.show()
-    #                                                                                  #
-    # -------------------------------------------------------------------------------- #
 
     def __str__(self):
         return f'thetas = {str(self.thetas)} || alpha = {self.alpha} || max_iter = {self.max_iter}'
@@ -159,8 +157,8 @@ if __name__ == "__main__":
     model.fit_(Xpill, Yscore)
     y_hat = model.predict_(Xpill)
     print("Loss :", model.mse_(Yscore, y_hat), end='\n\n')
+    model.plot_hypothesis(Xpill, Yscore, y_hat)
     model.plot_loss_function(Xpill, Yscore)
-    #model.plot_hypothesis(Xpill, Yscore, y_hat)
 
     model1 = MyLinearRegression(np.array([[89.], [-8.]]))
     Y_model1 = model1.predict_(Xpill)
