@@ -110,20 +110,6 @@ class MyLinearRegression:
         plt.legend()
         plt.show()
 
-    def loss_elem_(self, y, y_hat):
-        """
-        Calculates the loss for each element inside y_hat prediction vector
-        """
-        if not MyLinearRegression.verif_params(y, y_hat):
-            return None
-        loss = np.zeros((len(y), 1))
-        for i in range(len(y)):
-            try:
-                loss[i] = ((y[i] - y_hat[i])**2) * (1 / len(y))
-            except np.core._exceptions.UFuncTypeError:
-                return None
-        return loss
-
     def plot_loss_function(self, x, y):
         if not MyLinearRegression.verif_params(x, y):
             return None
