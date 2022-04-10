@@ -2,12 +2,13 @@ import numpy as np
 
 
 def minmax(x):
-    if not isinstance(x, np.ndarray) or len(x) == 0 or x.shape[1] != 1:
+    if not isinstance(x, np.ndarray) or len(x) == 0 or len(x.shape) != 2\
+            or x.shape[1] != 1:
         return None
     # Getting min value inside data
     try:
         data_min = np.min(x, axis=0)
-    except TypeError:
+    except (TypeError, np.core._exceptions.UFuncTypeError):
         return None
     # Getting the distance between max and min
     data_range = np.max(x, axis=0) - data_min
