@@ -25,7 +25,13 @@ def gradient(x, y, theta):
         return None
     if x.shape[1] != 1 or y.shape[1] != 1 or theta.shape != (2, 1):
         return None
-    x = add_intercept(x)
-    y_hat = np.sum((theta[0], theta[1] * y))
-    gradients = (1 / len(x)) * np.dot(x.T, np.dot(x, theta) - y)
+    try:
+        # Adding intercept to perform matrix dot products
+        x = add_intercept(x)
+        # Getting predictions
+        y_hat = np.sum((theta[0], theta[1] * y))
+        # vectorized gradients computation
+        gradients = (1 / len(x)) * np.dot(x.T, np.dot(x, theta) - y)
+    except (np.core._exceptions.UFuncTypeError, TypeError, ValueError):
+        return None
     return gradients
