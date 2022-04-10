@@ -29,7 +29,7 @@ class MyLinearRegression:
         """
         try:
             new_array = np.array(x, dtype=float)
-        except ValueError:
+        except (np.core._exceptions.UFuncTypeError, ValueError):
             return None
         intercept_ = np.ones((1, len(x)), dtype=float)
         return np.insert(new_array, 0, intercept_, axis=1)
@@ -41,7 +41,10 @@ class MyLinearRegression:
             return None
         x = MyLinearRegression.add_intercept(x)
         y_hat = self.predict_(x)
-        gradients = (1 / len(x)) * np.dot(x.T, np.dot(x, self.thetas) - y)
+        try:
+            gradients = (1 / len(x)) * np.dot(x.T, np.dot(x, self.thetas) - y)
+        except (np.core._exceptions.UFuncTypeError, ValueError, TypeError):
+            return None
         return gradients
 
 
@@ -98,7 +101,7 @@ class MyLinearRegression:
         for i in range(len(y)):
             try:
                 loss[i] = (y[i] - y_hat[i])**2
-            except np.core._exceptions.UFuncTypeError:
+            except (np.core._exceptions.UFuncTypeError, TypeError, ValueError):
                 return None
         return loss
 
