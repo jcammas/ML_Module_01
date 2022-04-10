@@ -33,7 +33,7 @@ class MyLinearRegression:
         """
         try:
             new_array = np.array(x, dtype=float)
-        except ValueError:
+        except (np.core._exceptions.UFuncTypeError, ValueError):
             return None
         intercept_ = np.ones((1, len(x)), dtype=float)
         return np.insert(new_array, 0, intercept_, axis=1)
@@ -45,7 +45,10 @@ class MyLinearRegression:
             return None
         x = MyLinearRegression.add_intercept(x)
         y_hat = self.predict_(x)
-        gradients = (1 / len(x)) * np.dot(x.T, np.dot(x, self.thetas) - y)
+        try:
+            gradients = (1 / len(x)) * np.dot(x.T, np.dot(x, self.thetas) - y)
+        except (np.core._exceptions.UFuncTypeError, TypeError, ValueError):
+            return None
         return gradients
 
 
@@ -113,12 +116,18 @@ class MyLinearRegression:
     def plot_loss_function(self, x, y):
         if not MyLinearRegression.verif_params(x, y):
             return None
+        # Settings static theta0 values and linspaced theta1 values
+        # in order to generate models with different theta values
+        # and perform predictions with different theta values
+        # and measure the loss value for each theta value
         theta0_list = [84., 89., 93., 97., 101., 105.]
         n = len(theta0_list)
         colors = plt.cm.Greys(np.linspace(1, 0, n + 1))
         continuous_theta1 = np.arange(-18, -4, 0.01).reshape(-1, 1)
+        # Generating len(continuous_theta1) models for each theta0 value
         for index, theta0 in enumerate(theta0_list):
             loss = []
+            # Generating a new model for each continuous theta1 value
             for theta1 in continuous_theta1:
                 model = MyLinearRegression(np.array([[theta0], [theta1]]))
                 loss.append(model.mse_(y, model.predict_(x)))
