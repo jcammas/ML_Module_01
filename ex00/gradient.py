@@ -10,7 +10,10 @@ def simple_gradient(x, y, theta):
     if x.shape[1] != 1 or y.shape[1] != 1 or theta.shape != (2, 1):
         return None
     gradients = np.zeros((2, 1))
-    y_hat = np.sum((theta[0], theta[1] * x))
+    try:
+        y_hat = np.sum((theta[0], theta[1] * x))
+    except (np.core._exceptions.UFuncTypeError, TypeError, ValueError):
+        return None
     for i in range(len(x)):
         try:
             gradients[0] += y_hat[i] - y[i]
